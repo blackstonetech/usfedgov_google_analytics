@@ -1,0 +1,12 @@
+<?php
+/**
+ * @file
+ * Adds federal google analytics js to every page load.
+ */
+
+/**
+ * Implements hook_init().
+ */
+  function fed_ga_dhs_init{
+    drupal_add_js(drupal_get_path('module', 'fed_ga_dhs') .'/fed_ga_dhs.js');
+  }

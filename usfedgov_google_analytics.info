@@ -1,0 +1,4 @@
+name = Fed DHS Google Analytics
+description = GSA provided Federal Google Analytics code for DHS
+version = 7.x-1.0
+core = 7.x
