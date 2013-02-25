@@ -9,6 +9,6 @@
 /**
  * Implements hook_init().
  */
-  function usfedgov_google_analytics_init{
+  function usfedgov_google_analytics_init(){
     drupal_add_js(drupal_get_path('module', 'usfedgov_google_analytics') .'/js/federated-analytics-DHS.js');
   }
