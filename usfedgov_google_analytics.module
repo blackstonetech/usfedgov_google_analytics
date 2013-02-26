@@ -10,5 +10,23 @@
  * Implements hook_init().
  */
   function usfedgov_google_analytics_init(){
-    drupal_add_js(drupal_get_path('module', 'usfedgov_google_analytics') .'/js/federated-analytics-DHS.js');
+    drupal_add_js(drupal_get_path('module', 'usfedgov_google_analytics') .'/js/DAP-Gov-Wide-GA-Code-DOT.js');
   }
+
+/**
+ * Implements hook_help.
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+function usfedgov_google_analytics_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#usfedgov_google_analytics":
+      return '<p>' . t("This module adds federal google analytics js to every page load.") . '</p>';
+      break;
+  }
+}
