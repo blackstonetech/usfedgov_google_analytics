@@ -10,6 +10,78 @@
  * Implements hook_init().
  */
   function usfedgov_google_analytics_init(){
-    drupal_add_js(drupal_get_path('module', 'usfedgov_google_analytics') .'/js/DAP-Gov-Wide-GA-Code-DOT.js');
+
+    $js_selection = variable_get('usfedgov_google_analytics_js_selection');
+    drupal_add_js(drupal_get_path('module', 'usfedgov_google_analytics').$js_selection);
   }
+
+/**
+ * Implements hook_menu().
+ */
+  function usfedgov_google_analytics_menu() {
+  $items = array();
+
+  $items['admin/config/system/usfedgov_google_analytics'] = array(
+    'title' => 'Federal Google Analytics',
+    'description' => 'Configuration for federal google analytics module',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('usfedgov_google_analytics_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback: Federal Google Analytics settings
+ *
+ * @see usfedgov_google_analytics_menu()
+ */
+
+function usfedgov_google_analytics_form($form, &$form_state) {
+// Select field for js file selection
+$form['usfedgov_google_analytics_js_selection'] = array(
+ '#type' => 'select',
+ '#default_value' => variable_get('usfedgov_google_analytics_js_selection',
+                                   ''),
+       '#title' => t('Federal Google Analytics JS File Selection'),
+       '#options' => array(
+         '/js/DAP-Gov-Wide-GA-Code-DOT.js' => '/js/DAP-Gov-Wide-GA-Code-DOT.js',
+         '/js/Federated-Analytics.js' => '/js/Federated-Analytics.js',
+         '/js/federated-analytics_NASA.js' => '/js/federated-analytics_NASA.js',
+         '/js/federated-analytics-DHS.js' => '/js/federated-analytics-DHS.js',
+         '/js/federated-analytics-SSA.js' => '/js/federated-analytics-SSA.js',
+       ),
+
+       '#description' => t('Select the google analytics js file that should be included on this site.'),
+   );
+
+
+
+
+// Submit button
+$form['submit'] = array(
+'#type' => 'submit',
+'#value' => t('Save settings'),
+);
+
+return $form;
+}
+
+
+/**
+ * Save configuration settings for federal google analytics module.
+ */
+ function usfedgov_google_analytics_form_submit($form, &$form_state) {
+ variable_set('usfedgov_google_analytics_js_selection',
+            $form_state['values']['usfedgov_google_analytics_js_selection']);
+
+ drupal_set_message(t('The settings have been saved'));
+
+
+
+}
+
+
 
