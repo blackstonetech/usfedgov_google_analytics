@@ -1,18 +1,19 @@
 <?php
 /**
  * @file
- * Adds federal google analytics js to every page load.
+ * Adds federal google analytics js to every page load via
+ * a select list populated with the .js files in the module's js directory
  */
 
-// Note: this currenlty is hardcoded to embed the DHS specific version of the code. Future versions will allow selection
 
 /**
  * Implements hook_init().
  */
   function usfedgov_google_analytics_init(){
 
+    usfedgov_google_analytics_gen_array();
     $js_selection = variable_get('usfedgov_google_analytics_js_selection');
-    drupal_add_js(drupal_get_path('module', 'usfedgov_google_analytics').$js_selection);
+    drupal_add_js(drupal_get_path('module', 'usfedgov_google_analytics').'/js/'.$js_selection);
   }
 
 /**
@@ -40,20 +41,20 @@
  */
 
 function usfedgov_google_analytics_form($form, &$form_state) {
+
+  $full_list =array();
+  $full_list =  variable_get('js_options','');
+  print_r($full_list);
+
+
+
 // Select field for js file selection
 $form['usfedgov_google_analytics_js_selection'] = array(
  '#type' => 'select',
  '#default_value' => variable_get('usfedgov_google_analytics_js_selection',
                                    ''),
        '#title' => t('Federal Google Analytics JS File Selection'),
-       '#options' => array(
-         '/js/DAP-Gov-Wide-GA-Code-DOT.js' => '/js/DAP-Gov-Wide-GA-Code-DOT.js',
-         '/js/Federated-Analytics.js' => '/js/Federated-Analytics.js',
-         '/js/federated-analytics_NASA.js' => '/js/federated-analytics_NASA.js',
-         '/js/federated-analytics-DHS.js' => '/js/federated-analytics-DHS.js',
-         '/js/federated-analytics-SSA.js' => '/js/federated-analytics-SSA.js',
-       ),
-
+       '#options' => $full_list,
        '#description' => t('Select the google analytics js file that should be included on this site.'),
    );
 
@@ -83,5 +84,34 @@ return $form;
 
 }
 
+function usfedgov_google_analytics_gen_array() {
+  $directory=  "sites/all/modules/usfedgov_google_analytics/js";
 
+  //$directory= drupal_get_path('module', 'usfedgov_google_analytics'.'/js');
+  //print($directory);
+
+   // create a handler to the directory
+    $dirhandler = opendir($directory);
+
+    // read all the files from directory
+    $nofiles=0;
+    while ($file = readdir($dirhandler)) {
+
+        // if $file isn't this directory or its parent
+        //add to the $files array
+        if ($file != '.' && $file != '..' && (substr($file, -3) == '.js'))
+        {
+      $nofiles++;
+      $files[$nofiles]=$file;
+        }
+    }
+//make the array associative with map assoc so the select list value
+//is the file name and not the array index
+$js_options = array();
+$js_options = drupal_map_assoc($files);
+variable_set('js_options', $js_options);
+
+    //close the handler
+    closedir($dirhandler);
+}
 
