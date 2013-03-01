@@ -42,19 +42,13 @@
 
 function usfedgov_google_analytics_form($form, &$form_state) {
 
-  $full_list =array();
-  $full_list =  variable_get('js_options','');
-  print_r($full_list);
-
-
-
 // Select field for js file selection
 $form['usfedgov_google_analytics_js_selection'] = array(
  '#type' => 'select',
  '#default_value' => variable_get('usfedgov_google_analytics_js_selection',
                                    ''),
        '#title' => t('Federal Google Analytics JS File Selection'),
-       '#options' => $full_list,
+       '#options' => variable_get('js_options',''),
        '#description' => t('Select the google analytics js file that should be included on this site.'),
    );
 
@@ -85,10 +79,9 @@ return $form;
 }
 
 function usfedgov_google_analytics_gen_array() {
-  $directory=  "sites/all/modules/usfedgov_google_analytics/js";
+  //get the directory to scan for .js files
 
-  //$directory= drupal_get_path('module', 'usfedgov_google_analytics'.'/js');
-  //print($directory);
+  $directory= drupal_get_path('module', 'usfedgov_google_analytics').'/js';
 
    // create a handler to the directory
     $dirhandler = opendir($directory);
@@ -105,13 +98,13 @@ function usfedgov_google_analytics_gen_array() {
       $files[$nofiles]=$file;
         }
     }
-//make the array associative with map assoc so the select list value
-//is the file name and not the array index
+// make the array associative with drupal_map_assoc so the select list value
+// is the file name and not the array index
 $js_options = array();
 $js_options = drupal_map_assoc($files);
 variable_set('js_options', $js_options);
 
-    //close the handler
+    // close the handler
     closedir($dirhandler);
 }
 
