@@ -9,17 +9,18 @@
 /**
  * Implements hook_init().
  */
-  function usfedgov_google_analytics_init(){
-
-    usfedgov_google_analytics_gen_array();
-    $js_selection = variable_get('usfedgov_google_analytics_js_selection');
-    drupal_add_js(drupal_get_path('module', 'usfedgov_google_analytics').'/js/'.$js_selection);
-  }
+function usfedgov_google_analytics_init() {
+  // Call gen_array function to scan js/ directory for .js files and
+  // store results in variable.
+  usfedgov_google_analytics_gen_array();
+  $js_selection = variable_get('usfedgov_google_analytics_js_selection');
+  drupal_add_js(drupal_get_path('module', 'usfedgov_google_analytics') . '/js/' . $js_selection);
+}
 
 /**
  * Implements hook_menu().
  */
-  function usfedgov_google_analytics_menu() {
+function usfedgov_google_analytics_menu() {
   $items = array();
 
   $items['admin/config/system/usfedgov_google_analytics'] = array(
@@ -35,76 +36,69 @@
 }
 
 /**
- * Page callback: Federal Google Analytics settings
+ * Page callback: Federal Google Analytics settings.
  *
  * @see usfedgov_google_analytics_menu()
  */
-
 function usfedgov_google_analytics_form($form, &$form_state) {
 
-// Select field for js file selection
-$form['usfedgov_google_analytics_js_selection'] = array(
- '#type' => 'select',
- '#default_value' => variable_get('usfedgov_google_analytics_js_selection',
+  // Select field for js file selection.
+  $form['usfedgov_google_analytics_js_selection'] = array(
+    '#type' => 'select',
+    '#default_value' => variable_get('usfedgov_google_analytics_js_selection',
                                    ''),
-       '#title' => t('Federal Google Analytics JS File Selection'),
-       '#options' => variable_get('js_options',''),
-       '#description' => t('Select the google analytics js file that should be included on this site.'),
-   );
+    '#title' => t('Federal Google Analytics JS File Selection'),
+    '#options' => variable_get('js_options', ''),
+    '#description' => t('Select the google analytics js file that should be included on this site.'),
+  );
 
+  // Submit button.
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save settings'),
+  );
 
-
-
-// Submit button
-$form['submit'] = array(
-'#type' => 'submit',
-'#value' => t('Save settings'),
-);
-
-return $form;
+  return $form;
 }
 
 
 /**
  * Save configuration settings for federal google analytics module.
  */
- function usfedgov_google_analytics_form_submit($form, &$form_state) {
- variable_set('usfedgov_google_analytics_js_selection',
+function usfedgov_google_analytics_form_submit($form, &$form_state) {
+  variable_set('usfedgov_google_analytics_js_selection',
             $form_state['values']['usfedgov_google_analytics_js_selection']);
 
- drupal_set_message(t('The settings have been saved'));
-
-
+  drupal_set_message(t('The settings have been saved'));
 
 }
 
+/**
+ * Function to scan module's js directory, form associative array of .js files.
+ */
 function usfedgov_google_analytics_gen_array() {
-  //get the directory to scan for .js files
+  // Get the directory to scan for .js files.
+  $directory = drupal_get_path('module', 'usfedgov_google_analytics') . '/js';
 
-  $directory= drupal_get_path('module', 'usfedgov_google_analytics').'/js';
+  // Create a handler to the directory.
+  $dirhandler = opendir($directory);
 
-   // create a handler to the directory
-    $dirhandler = opendir($directory);
+  // Read all the files from js/ directory ending in .js.
+  $nofiles = 0;
+  while ($file = readdir($dirhandler)) {
 
-    // read all the files from directory
-    $nofiles=0;
-    while ($file = readdir($dirhandler)) {
-
-        // if $file isn't this directory or its parent
-        //add to the $files array
-        if ($file != '.' && $file != '..' && (substr($file, -3) == '.js'))
-        {
+    // If $file isn't this directory or its parent, add to the $files array.
+    if ($file != '.' && $file != '..' && (substr($file, -3) == '.js')) {
       $nofiles++;
-      $files[$nofiles]=$file;
-        }
+      $files[$nofiles] = $file;
     }
-// make the array associative with drupal_map_assoc so the select list value
-// is the file name and not the array index
-$js_options = array();
-$js_options = drupal_map_assoc($files);
-variable_set('js_options', $js_options);
+  }
+  // Form associative array with drupal_map_assoc so the select list value
+  // is the file name and not the array index. Store array in variable.
+  $js_options = array();
+  $js_options = drupal_map_assoc($files);
+  variable_set('js_options', $js_options);
 
-    // close the handler
-    closedir($dirhandler);
+  // Close the handler.
+  closedir($dirhandler);
 }
-
