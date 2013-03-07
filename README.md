@@ -27,3 +27,5 @@ DRUSH INSTALLATION
 4. Enable the usfedgov_google_analytics module.
 
 
+Note: If you change the js file selection, you must clear your site's javascript cache to avoid including the previous cached js selection.
+

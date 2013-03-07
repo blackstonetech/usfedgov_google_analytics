@@ -2,17 +2,17 @@
 
 /**
  * @file
- * Drush integration for Federal Government Google Analytics to download the
- * required js library from https://github.com/GSA/DAP-Gov-wide-GA-Code.
+ *   drush integration for Federal Government Google Analytics to download the
+ *   required js library from https://github.com/GSA/DAP-Gov-wide-GA-Code.
  */
 
 /**
- * The GSA Google Analytics js repo URI.
+ * The Colorbox plugin URI.
  */
 define('FEDANALYTICS_DOWNLOAD_URI', 'https://github.com/GSA/DAP-Gov-wide-GA-Code/archive/master.zip');
 
 /**
- * Implements of hook_drush_command().
+ * Implementation of hook_drush_command().
  *
  * In this hook, you specify which commands your
  * drush module makes available, what it does and
@@ -29,7 +29,7 @@ define('FEDANALYTICS_DOWNLOAD_URI', 'https://github.com/GSA/DAP-Gov-wide-GA-Code
 function usfedgov_google_analytics_libs_drush_command() {
   $items = array();
 
-  // The key in the $items array is the name of the command.
+  // the key in the $items array is the name of the command.
   $items['fed_analytics_libs'] = array(
     'callback' => 'drush_fed_analytics_libs',
     'description' => dt('Download and install the federal government Google Analytics library.'),
@@ -45,7 +45,7 @@ function usfedgov_google_analytics_libs_drush_command() {
 }
 
 /**
- * Implements of hook_drush_help().
+ * Implementation of hook_drush_help().
  *
  * This function is called whenever a drush user calls
  * 'drush help <name-of-your-command>'
@@ -88,38 +88,42 @@ function drush_fed_analytics_libs() {
   $filename = basename(FEDANALYTICS_DOWNLOAD_URI);
   $dirname = basename('DAP-Gov-wide-GA-Code-master', '.zip');
 
-  // Remove any existing fed_analytics directory.
+  // Remove any existing fed_analytics directory
   if (is_dir($dirname)) {
     drush_log(dt('A existing Colorbox plugin was overwritten at @path', array('@path' => $path)), 'notice');
   }
-  // Remove any existing fed_analytics zip archive.
+  // Remove any existing fed_analytics zip archive
   if (is_file($filename)) {
     drush_op('unlink', $filename);
   }
 
-  // Download the zip archive, use --no-check-certificate
-  // flag to use wget with https.
+  // Download the zip archive, issue --no-check-certificate flag to use wget with https
   if (!drush_shell_exec('wget --no-check-certificate ' . FEDANALYTICS_DOWNLOAD_URI)) {
     drush_shell_exec('curl -O ' . FEDANALYTICS_DOWNLOAD_URI);
   }
 
   if (is_file($filename)) {
-    // Decompress the zip archive.
+    // Decompress the zip archive
     drush_shell_exec('unzip -qq -o ' . $filename);
-    // Remove the zip archive.
+    // Remove the zip archive
     drush_op('unlink', $filename);
   }
+
+
   // Change the directory name to "fed_analytics" if needed.
   if ($dirname != 'fed_analytics') {
     drush_move_dir($dirname, 'fed_analytics', TRUE);
     $dirname = 'fed_analytics';
   }
+
+
   if (is_dir($dirname)) {
     drush_log(dt('The Federal Government Google Analytics library has been installed in @path', array('@path' => $path)), 'success');
   }
   else {
     drush_log(dt('Drush was unable to install the Federal Government Google Analytics library to @path', array('@path' => $path)), 'error');
   }
+
   // Set working directory back to the previous working directory.
   chdir($olddir);
 }

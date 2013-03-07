@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @file
  * Adds federal google analytics js to every page load via
- * a select list populated with the .js files in the fed_analyticd library
- * directory
+ * a select list populated with the .js files in the fed_analytics library
+ * directory.
  */
 
 /**
@@ -11,24 +12,23 @@
  */
 function usfedgov_google_analytics_init() {
 
-// Attempt to load the fed_analytics js library.
+  // Attempt to load the fed_analytics js library.
   $library = libraries_load('fed_analytics');
 
-     // Library installation was successful, proceed with loading select list and header
-     // information.
-      if ($library['installed']) {
-        _usfedgov_google_analytics_load();
-      }
-      else {
-        //print error message
-          drupal_set_message(t('The <a href="!usfedgov_google_analytics">fed_analytics</a> javascript library is missing. Use drush fed_analytics_libs to download and create the library after enabling the usfedgov_google_analytics_libs module, or see <a href="!readme">README.md</a> for instructions on how to manually download and extract the files.', array(
-      '!usfedgov_google_analytics' => 'https://github.com/GSA/DAP-Gov-wide-GA-Code/archive/master.zip/',
-      '!readme' => url(drupal_get_path('module', 'usfedgov_google_analytics') . '/README.md'))
-    ), 'error', FALSE);
-           module_disable(array('usfedgov_google_analytics'),TRUE);
-
-      }
-
+  // Library installation was successful, proceed with loading select list and
+  // script header information.
+  if ($library['installed']) {
+    _usfedgov_google_analytics_load();
+  }
+  else {
+    // Print dependency error message and drush/manual download instructions.
+    drupal_set_message(t('The <a href="@usfedgov_google_analytics">fed_analytics</a> javascript library is missing. Use <code>drush fed_analytics_libs</code> to download and create the library after enabling the usfedgov_google_analytics_libs module, or see <a href="@readme">README.md</a> for instructions on how to manually download and extract the files.', array(
+          '@usfedgov_google_analytics' => 'https://github.com/GSA/DAP-Gov-wide-GA-Code/archive/master.zip/',
+          '@readme' => url(drupal_get_path('module', 'usfedgov_google_analytics') . '/README.md'),
+        )
+      ), 'error', FALSE);
+    module_disable(array('usfedgov_google_analytics'), TRUE);
+  }
 }
 
 /**
@@ -60,7 +60,8 @@ function usfedgov_google_analytics_form($form, &$form_state) {
   $form['usfedgov_google_analytics_js_selection'] = array(
     '#type' => 'select',
     '#default_value' => variable_get('usfedgov_google_analytics_js_selection',
-                                   ''),
+      ''
+    ),
     '#title' => t('Federal Google Analytics JS File Selection'),
     '#options' => variable_get('js_options', ''),
     '#description' => t('Select the google analytics js file that should be included on this site.'),
@@ -73,25 +74,18 @@ function usfedgov_google_analytics_form($form, &$form_state) {
   );
 
   return $form;
-
 }
-
 
 /**
  * Save configuration settings for federal google analytics module.
  */
 function usfedgov_google_analytics_form_submit($form, &$form_state) {
   variable_set('usfedgov_google_analytics_js_selection',
-            $form_state['values']['usfedgov_google_analytics_js_selection']);
+    $form_state['values']['usfedgov_google_analytics_js_selection']
+  );
 
   drupal_set_message(t('The settings have been saved'));
-
 }
-
-
-
-
-
 
 /**
  * Function to scan module's js directory, form associative array of .js files.
@@ -123,16 +117,13 @@ function usfedgov_google_analytics_gen_array() {
   closedir($dirhandler);
 }
 
-
-
+/**
+ * Function to load user's js file selection with drupal_add_js.
+ */
 function _usfedgov_google_analytics_load() {
-
+  // Populate select list with js files in fed_analytics library directory.
   usfedgov_google_analytics_gen_array();
   $js_selection = variable_get('usfedgov_google_analytics_js_selection');
   drupal_add_js(libraries_get_path('fed_analytics') . '/' . $js_selection);
-
 }
-
-
-
 
