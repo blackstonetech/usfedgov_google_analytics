@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Adds federal google analytics js library
+ *
+ */
+
+/**
+ * Implements hook_libraries_info().
+ */
+function usfedgov_google_analytics_libs_libraries_info() {
+
+  $lib_file = variable_get('usfedgov_google_analytics_js_selection');
+
+  $libraries['fed_analytics'] = array(
+    'name' => 'Fed Google Analytics',
+    'vendor url' => 'https://github.com/GSA/DAP-Gov-wide-GA-Code',
+    'download url' => 'https://github.com/GSA/DAP-Gov-wide-GA-Code/archive/master.zip',
+    // Version manually set to 1.0 rather than scanning js file for pattern
+    // because of GSA file header version inconsistencies
+    'version' => '1.0',
+    'files' => array(
+      // Load js library file based on user selection.
+      'js' => array(variable_get('usfedgov_google_analytics_js_selection')),
+    ),
+  );
+
+  return $libraries;
+}
+

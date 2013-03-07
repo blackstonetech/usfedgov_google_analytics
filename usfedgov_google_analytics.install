@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Installation file for US Federal Government Google Analytics module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function usfedgov_google_analytics_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+  $library = libraries_detect('fed_analytics');
+  // Required libraries found, continue installation.
+  if ($library['installed']) {
+    $requirements['usfedgov_google_analytics']['severity'] = REQUIREMENT_OK;
+  }
+  // Required library wasn't found; abort installation.
+  else {
+    // Provide a download link and drush download instructions to library repo.
+    $requirements['usfedgov_google_analytics']['description'] = $t('The <a href="!usfedgov_google_analytics">fed_analytics</a> javascript library is missing. Use drush fed_analytics_libs to download and create the library after enabling the usfedgov_google_analytics_libs module, or see <a href="!readme">README.md</a> for instructions on how to manually download and extract the files.', array(
+        '!usfedgov_google_analytics' => 'https://github.com/GSA/DAP-Gov-wide-GA-Code/archive/master.zip/',
+        '!readme' => url(drupal_get_path('module', 'usfedgov_google_analytics') . '/README.md'),
+      )
+    );
+    $requirements['usfedgov_google_analytics']['severity'] = REQUIREMENT_ERROR;
+  }
+
+  return $requirements;
+}
+
