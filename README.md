@@ -15,7 +15,7 @@ MANUAL INSTALATION
 ==================
 1. Enable the Libraries API module
 2. Download the Federal Government Google Analytics files at https://github.com/GSA/DAP-Gov-wide-GA-Code/archive/master.zip
-3. Extract the .zip file and rename it to fed_analyticd
+3. Extract the .zip file and rename it to fed_analytics
 4. Place the fed_analytics file containing the js files into your libraries directory. If you do not have a libraries directory at sites/all/libraries (or sites/example.com/libraries for multisites), create it at /sites/all/libraries.
 5. Enable the usfedgov_google_analytics module.
 
