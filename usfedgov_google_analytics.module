@@ -2,7 +2,8 @@
 /**
  * @file
  * Adds federal google analytics js to every page load via
- * a select list populated with the .js files in the module's js directory
+ * a select list populated with the .js files in the fed_analyticd library
+ * directory
  */
 
 /**
@@ -20,8 +21,8 @@ function usfedgov_google_analytics_init() {
       }
       else {
         //print error message
-          drupal_set_message(t('The <a href="!usfedgov_google_analytics">fed_analytics</a> javascript library is missing. Use <code>drush usfedgov_google_analytics install-libs</code> to download anad create the library, or see <a href="!readme">README.md</a> for instructions on how to download and extract the files.', array(
-      '!usfedgov_google_analytics' => 'http://themergency.com/footable/',
+          drupal_set_message(t('The <a href="!usfedgov_google_analytics">fed_analytics</a> javascript library is missing. Use drush fed_analytics_libs to download and create the library after enabling the usfedgov_google_analytics_libs module, or see <a href="!readme">README.md</a> for instructions on how to manually download and extract the files.', array(
+      '!usfedgov_google_analytics' => 'https://github.com/GSA/DAP-Gov-wide-GA-Code/archive/master.zip/',
       '!readme' => url(drupal_get_path('module', 'usfedgov_google_analytics') . '/README.md'))
     ), 'error', FALSE);
            module_disable(array('usfedgov_google_analytics'),TRUE);
@@ -90,30 +91,7 @@ function usfedgov_google_analytics_form_submit($form, &$form_state) {
 
 
 
-/**
- * Implements hook_libraries_info().
- */
 
-
-function usfedgov_google_analytics_libraries_info() {
-
-  $lib_file = variable_get('usfedgov_google_analytics_js_selection');
-
-  $libraries['fed_analytics'] = array(
-    'name' => 'Fed Google Analytics',
-    'vendor url' => 'https://github.com/GSA/DAP-Gov-wide-GA-Code',
-    'download url' => 'https://github.com/GSA/DAP-Gov-wide-GA-Code/archive/master.zip',
-    // Version manually set to 1.0 rather than scanning js file for pattern
-    // because of file header version inconsistencies
-    'version' => '1.0',
-    'files' => array(
-      // Load js library file based on user selection.
-      'js' => array(variable_get('usfedgov_google_analytics_js_selection')),
-    ),
-  );
-
-  return $libraries;
-}
 
 /**
  * Function to scan module's js directory, form associative array of .js files.
