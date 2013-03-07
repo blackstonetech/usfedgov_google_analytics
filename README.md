@@ -3,7 +3,7 @@ US Fed Gov Google Analytics Drupal Module
 
 Embeds appropriate GA javascript file for US federal agencies
 
-RELEASE CANDIDATE RELEASE NOTES:
+RELEASE NOTES:
 
 To change the agency js file, you must select the file in the admin gui accessible at /admin/config/system/usfedgov_google_analytics. The .js files in the fed_analytics libraries directory will dynamically populate the select list. You must follow the installation instructions below to download the library manually or via drush.
 
@@ -26,6 +26,4 @@ DRUSH INSTALLATION
 3. Run drush fed_analytics_libs If the fed_analytics directory does not exist at /sites/all/libraries, it will be created.
 4. Enable the usfedgov_google_analytics module.
 
-
-Note: if you change the agency js file, you will need to clear the site's javascript cache.
 
