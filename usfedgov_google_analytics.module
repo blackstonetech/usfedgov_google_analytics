@@ -12,10 +12,10 @@
  */
 function usfedgov_google_analytics_init() {
 
-  // Attempt to load the fed_analytics js library.
-  $library = libraries_load('fed_analytics');
+  // Attempt to load the fed_analytics js library array.
+  $library = libraries_detect('fed_analytics');
 
-  // Library installation was successful, proceed with loading select list and
+  // Library detction was successful, proceed with loading select list and
   // script header information.
   if ($library['installed']) {
     _usfedgov_google_analytics_load();
@@ -56,12 +56,13 @@ function usfedgov_google_analytics_menu() {
  */
 function usfedgov_google_analytics_form($form, &$form_state) {
 
+  // Populate select list with js files in fed_analytics library directory.
+  usfedgov_google_analytics_gen_array();
+
   // Select field for js file selection.
   $form['usfedgov_google_analytics_js_selection'] = array(
     '#type' => 'select',
-    '#default_value' => variable_get('usfedgov_google_analytics_js_selection',
-      ''
-    ),
+    '#default_value' => variable_get('usfedgov_google_analytics_js_selection', ''),
     '#title' => t('Federal Google Analytics JS File Selection'),
     '#options' => variable_get('js_options', ''),
     '#description' => t('Select the google analytics js file that should be included on this site.'),
@@ -98,32 +99,30 @@ function usfedgov_google_analytics_gen_array() {
   $dirhandler = opendir($directory);
 
   // Read all the files from fed_analytics library directory ending in .js.
-  $nofiles = 0;
   while ($file = readdir($dirhandler)) {
-
     // If $file isn't this directory or its parent, add to the $files array.
     if ($file != '.' && $file != '..' && (substr($file, -3) == '.js')) {
-      $nofiles++;
-      $files[$nofiles] = $file;
+      $files[] = $file;
     }
   }
   // Form associative array with drupal_map_assoc so the select list value
   // is the file name and not the array index. Store array in variable.
-  $js_options = array();
   $js_options = drupal_map_assoc($files);
-  variable_set('js_options', $js_options);
 
   // Close the handler.
   closedir($dirhandler);
+
+  // If directory contents have changed then update the global variable.
+  if ($js_options != variable_get('js_options', NULL)) {
+    variable_set('js_options', $js_options);
+  }
 }
 
 /**
  * Function to load user's js file selection with drupal_add_js.
  */
 function _usfedgov_google_analytics_load() {
-  // Populate select list with js files in fed_analytics library directory.
-  usfedgov_google_analytics_gen_array();
-  $js_selection = variable_get('usfedgov_google_analytics_js_selection');
-  drupal_add_js(libraries_get_path('fed_analytics') . '/' . $js_selection);
+  if ($js_selection = variable_get('usfedgov_google_analytics_js_selection', NULL)) {
+    drupal_add_js(libraries_get_path('fed_analytics') . '/' . $js_selection);
+  }
 }
-
