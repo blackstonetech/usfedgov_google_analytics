@@ -32,6 +32,18 @@ function usfedgov_google_analytics_init() {
 }
 
 /**
+ * Implements hook_permission().
+ */
+function usfedgov_google_analytics_permission(){
+  return array(
+    'administer federal google analytics'=> array(
+      'title' => t('Administer Federal Google Analytics'),
+      'restrict access' => TRUE
+    )
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function usfedgov_google_analytics_menu() {
@@ -42,7 +54,7 @@ function usfedgov_google_analytics_menu() {
     'description' => 'Configuration for federal google analytics module',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('usfedgov_google_analytics_form'),
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer federal google analytics'),
     'type' => MENU_NORMAL_ITEM,
   );
 
