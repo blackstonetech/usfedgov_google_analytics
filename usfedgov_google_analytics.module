@@ -15,7 +15,7 @@ function usfedgov_google_analytics_init() {
   // Attempt to load the fed_analytics js library array.
   $library = libraries_detect('fed_analytics');
 
-  // Library detction was successful, proceed with loading select list and
+  // Library detection was successful, proceed with loading select list and
   // script header information.
   if ($library['installed']) {
     _usfedgov_google_analytics_load();
