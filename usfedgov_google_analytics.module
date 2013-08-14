@@ -11,6 +11,16 @@
  * Implements hook_init().
  */
 function usfedgov_google_analytics_init() {
+  global $user;
+
+  // Respect Google Analytics module tracking scope settings if that module is enabled.
+  if (module_exists('googleanalytics')) {
+    
+    if (!_googleanalytics_visibility_pages() || !_googleanalytics_visibility_user($user)) {
+      // Exit hook_init() without adding additional JavaScript.
+      return;
+    }
+  }
 
   // Attempt to load the fed_analytics js library array.
   $library = libraries_detect('fed_analytics');
