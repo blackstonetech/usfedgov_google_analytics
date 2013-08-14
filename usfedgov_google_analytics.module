@@ -16,14 +16,7 @@ function usfedgov_google_analytics_init() {
   // Respect Google Analytics module tracking scope settings if that module is enabled.
   if (module_exists('googleanalytics')) {
     
-    // Get page status code for visibility filtering.
-    $status = drupal_get_http_header('Status');
-    $trackable_status_codes = array(
-      '403 Forbidden',
-      '404 Not Found',
-    );
-    
-    if (!_googleanalytics_visibility_pages() || in_array($status, $trackable_status_codes) || !_googleanalytics_visibility_user($user)) {
+    if (!_googleanalytics_visibility_pages() || !_googleanalytics_visibility_user($user)) {
       // Exit hook_init() without adding additional JavaScript.
       return;
     }
